@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "@react-native-community",
+    "plugin:relay/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["relay"],
+  "rules": {
+    "react/react-in-jsx-scope": 0,
+    "relay/generated-flow-types": "off"
+  }
+}
