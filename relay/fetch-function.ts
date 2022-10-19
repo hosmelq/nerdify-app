@@ -1,3 +1,4 @@
+import * as SecureStore from 'expo-secure-store'
 import type {
   CacheConfig,
   RequestParameters,
@@ -5,6 +6,7 @@ import type {
   Variables,
 } from 'relay-runtime'
 
+import {ACCESS_TOKEN_KEY} from '../constants'
 import {getHeaders, getRequestBody} from './helpers'
 
 export default async function fetchFunction(
@@ -13,17 +15,17 @@ export default async function fetchFunction(
   cacheConfig: CacheConfig,
   uploadables?: UploadableMap | null
 ) {
-  const accessToken = '???'
+  const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN_KEY)
   const headers = getHeaders(uploadables)
 
-  // if (accessToken) {
-  //   headers.Authorization = `Bearer ${session.accessToken}`
-  // }
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`
+  }
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_GRAPHQL_URL}?environment=client&operation=${operation.name}`,
+    `${process.env.GRAPHQL_URL}?environment=app&operation=${operation.name}`,
     {
-      body: getRequestBody(operation, variables, uploadables),
+      body: getRequestBody(operation, variables),
       headers,
       method: 'POST',
     }

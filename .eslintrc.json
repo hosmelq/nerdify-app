@@ -6,6 +6,7 @@
   ],
   "plugins": ["relay"],
   "rules": {
+    "@typescript-eslint/no-shadow": "off",
     "react/react-in-jsx-scope": 0,
     "relay/generated-flow-types": "off"
   }

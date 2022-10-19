@@ -15,8 +15,10 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   },
   name: 'Nerdify',
   orientation: 'portrait',
+  privacy: 'hidden',
+  owner: 'hosmelq',
   scheme: 'nerdify',
-  slug: 'nerdify-app',
+  slug: 'nerdify',
   splash: {
     backgroundColor: '#ffffff',
     image: './assets/splash.png',
