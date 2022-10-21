@@ -164,7 +164,7 @@ const machine = createMachine(
                     },
                     {
                       actions: 'clearCompletionData',
-                      target: '#auth.signedOut.timeuot',
+                      target: '#auth.signedOut.timeout',
                     },
                   ],
                 },
@@ -186,7 +186,7 @@ const machine = createMachine(
         states: {
           failed: {},
           idle: {},
-          timeuot: {},
+          timeout: {},
         },
         on: {
           SIGN_IN_WITH_EMAIL_INITIATE: {

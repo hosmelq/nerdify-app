@@ -16,7 +16,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   name: 'Nerdify',
   orientation: 'portrait',
   privacy: 'hidden',
-  owner: 'hosmelq',
+  owner: 'nerdify',
   scheme: 'nerdify',
   slug: 'nerdify',
   splash: {

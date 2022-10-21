@@ -6,12 +6,8 @@ import * as yup from 'yup'
 
 import {useSelector} from '@xstate/react'
 
-import {
-  StyledText,
-  StyledTextInput,
-  StyledView,
-} from '../../../components/styles'
-import useAuthInterpreter from '../../../hooks/use-auth-interpreter.hook'
+import {StyledText, StyledTextInput, StyledView} from '../../components/styles'
+import useAuthInterpreter from '../../hooks/use-auth-interpreter.hook'
 
 interface FormValues {
   email: string

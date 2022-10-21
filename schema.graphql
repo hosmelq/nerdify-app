@@ -8,6 +8,18 @@ type Query {
     handle: String!
   ): Event
 
+  """Returns an Event resource by ID."""
+  event(
+    """The ID of the Event to return."""
+    id: ID!
+  ): Event
+
+  """Returns an Event Ticket resource by ID."""
+  eventTicket(
+    """The ID of the Event Ticket to return."""
+    id: ID!
+  ): EventTicket
+
   """Returns a Short Link resource by ID."""
   shortLink(
     """The ID of the Short Link to return."""
@@ -340,6 +352,9 @@ type EventTicket {
   """The attendee that this ticket belongs to."""
   attendee: EventAttendee!
 
+  """The barcode of the ticket."""
+  barcode: String!
+
   """The date and time (ISO 8601 format) when the attendee checked in."""
   checkedInAt: DateTime
 
@@ -351,6 +366,9 @@ type EventTicket {
 
   """A globally-unique identifier."""
   id: ID!
+
+  """The status of the ticket."""
+  status: EventTicketStatus!
 
   """The date and time (ISO 8601 format) when the ticket was last modified."""
   updatedAt: DateTime!
@@ -377,6 +395,18 @@ type EventAttendee {
   The date and time (ISO 8601 format) when the attendee was last modified.
   """
   updatedAt: DateTime!
+}
+
+"""The possible statuses of an event ticket."""
+enum EventTicketStatus {
+  """The ticket is cancelled."""
+  CANCELLED
+
+  """The ticket is unused."""
+  UNUSED
+
+  """The ticket is used."""
+  USED
 }
 
 """Represents a Short Link."""
@@ -634,6 +664,9 @@ type Mutation {
   """Register an attendee for an event."""
   eventAttendeeRegister(input: EventAttendeeRegisterInput!): EventAttendeeRegisterPayload
 
+  """Updates status for an event ticket."""
+  eventTicketMarkAsUsed(input: EventTicketMarkAsUsedInput!): EventTicketMarkAsUsedPayload
+
   """Creates a short link."""
   shortLinkCreate(input: ShortLinkInput!): ShortLinkCreatePayload
 
@@ -766,6 +799,24 @@ type EventAttendeeRegisterPayload {
   eventAttendee: EventAttendee
 
   """The created ticket."""
+  eventTicket: EventTicket
+
+  """The list of errors that occurred from executing the mutation."""
+  userErrors: [UserError!]!
+}
+
+"""Specifies the ticket to mark as used."""
+input EventTicketMarkAsUsedInput {
+  """The ID of the ticket to mark as used."""
+  id: ID!
+}
+
+"""Return type for `eventTicketMarkAsUsed` mutation."""
+type EventTicketMarkAsUsedPayload {
+  """The event associated with the ticket."""
+  event: Event
+
+  """The ticket marked as used."""
   eventTicket: EventTicket
 
   """The list of errors that occurred from executing the mutation."""

@@ -4,8 +4,8 @@ import {useEffect} from 'react'
 import {HeaderBackButton} from '@react-navigation/elements'
 import {useSelector} from '@xstate/react'
 
-import {StyledText, StyledView} from '../../../components/styles'
-import useAuthInterpreter from '../../../hooks/use-auth-interpreter.hook'
+import {StyledText, StyledView} from '../../components/styles'
+import useAuthInterpreter from '../../hooks/use-auth-interpreter.hook'
 
 export default function Waiting() {
   const link = useLink()
@@ -14,7 +14,7 @@ export default function Waiting() {
 
   useEffect(() => {
     service.onTransition((state) => {
-      if (state.matches('signedOut.timeuot')) {
+      if (state.matches('signedOut.timeout')) {
         link.back()
       }
     })
@@ -24,7 +24,6 @@ export default function Waiting() {
     <>
       <Stack.Screen
         options={{
-          // eslint-disable-next-line react/no-unstable-nested-components
           headerLeft: () => (
             <HeaderBackButton
               onPress={() => {

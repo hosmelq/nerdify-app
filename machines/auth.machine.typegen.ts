@@ -86,7 +86,7 @@ export interface Typegen0 {
     | 'signedOut'
     | 'signedOut.failed'
     | 'signedOut.idle'
-    | 'signedOut.timeuot'
+    | 'signedOut.timeout'
     | 'starting'
     | 'validateAccessToken'
     | {
@@ -94,7 +94,7 @@ export interface Typegen0 {
           | 'complete'
           | 'initiate'
           | {complete?: 'checking' | 'waiting'}
-        signedOut?: 'failed' | 'idle' | 'timeuot'
+        signedOut?: 'failed' | 'idle' | 'timeout'
       }
   tags: 'loading'
 }
