@@ -15,6 +15,13 @@ export default function Layout() {
           headerTitle: 'Events',
         }}
       />
+      <Stack.Screen
+        name="[eventId]/index"
+        options={{
+          headerBackTitle: '',
+          headerTitle: '',
+        }}
+      />
     </Stack>
   )
 }
