@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "@react-native-community",
+    "plugin:relay/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["relay"],
+  "rules": {
+    "@typescript-eslint/no-shadow": "off",
+    "react/no-unstable-nested-components": "off",
+    "react/react-in-jsx-scope": 0,
+    "relay/generated-flow-types": "off"
+  }
+}

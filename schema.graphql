@@ -1,0 +1,1046 @@
+type Query {
+  """The authenticated user."""
+  viewer: User!
+
+  """Return an event by its handle."""
+  eventByHandle(
+    """The handle of the event."""
+    handle: String!
+  ): Event
+
+  """Returns an Event resource by ID."""
+  event(
+    """The ID of the Event to return."""
+    id: ID!
+  ): Event
+
+  """Returns an Event Ticket resource by ID."""
+  eventTicket(
+    """The ID of the Event Ticket to return."""
+    id: ID!
+  ): EventTicket
+
+  """Returns a Short Link resource by ID."""
+  shortLink(
+    """The ID of the Short Link to return."""
+    id: ID!
+  ): ShortLink
+
+  """List of events."""
+  events(
+    """Limits number of fetched items. Maximum allowed value: 50."""
+    first: Int!
+
+    """A cursor after which elements are returned."""
+    after: String
+  ): EventConnection!
+
+  """List of short links."""
+  shortLinks(
+    """Filter by the short link's pinned status."""
+    pinnedStatus: ShortLinkPinnedStatus = ANY
+
+    """Reverse the order of the underlying list."""
+    reverse: Boolean
+
+    """Sort the underlying list by the given key."""
+    sortKey: ShortLinkSortKeys
+
+    """Limits number of fetched items. Maximum allowed value: 50."""
+    first: Int!
+
+    """A cursor after which elements are returned."""
+    after: String
+  ): ShortLinkConnection!
+}
+
+"""Represents a User."""
+type User {
+  """The date and time (ISO 8601 format) when the user was created."""
+  createdAt: DateTime!
+
+  """The email of the user."""
+  email: String!
+
+  """A globally-unique identifier."""
+  id: ID!
+
+  """The name of the user."""
+  name: String!
+
+  """The phone number of the user."""
+  phone: String
+
+  """The date and time (ISO 8601 format) when the user was last modified."""
+  updatedAt: DateTime!
+
+  """The username of the user."""
+  username: String
+}
+
+"""
+Represents an ISO 8601-encoded date and time string.
+
+For example, 3:00 pm on July 23, 2022 in the time zone of UTC (Coordinated Universal Time) is represented as "2019-09-07T15:50:00Z".
+"""
+scalar DateTime
+
+"""Represents an Event."""
+type Event implements HasMetafields {
+  """The date and time (ISO 8601 format) when the event was created."""
+  createdAt: DateTime!
+
+  """The description of the event."""
+  description: String!
+
+  """The date and time (ISO 8601 format) when the event ends."""
+  endsAt: DateTime!
+
+  """A globally-unique identifier."""
+  id: ID!
+
+  """Returns a metafield by namespace and key that belongs to the resource."""
+  metafield(
+    """The key for the metafield."""
+    key: String!
+
+    """The namespace for the metafield."""
+    namespace: String!
+  ): Metafield
+
+  """The name of the event."""
+  name: String!
+
+  """The date and time (ISO 8601 format) when the event was published."""
+  publishedAt: DateTime
+
+  """The date and time (ISO 8601 format) when the event starts."""
+  startsAt: DateTime!
+
+  """The status of the event."""
+  status: EventStatus!
+
+  """The summary of the event."""
+  summary: String!
+
+  """The venue associated with the event."""
+  venue: EventVenue!
+
+  """The date and time (ISO 8601 format) when the event was last modified."""
+  updatedAt: DateTime!
+
+  """List of metafields that belong to the resource."""
+  metafields(
+    """The metafield namespace to filter by."""
+    namespace: String
+
+    """Limits number of fetched items. Maximum allowed value: 50."""
+    first: Int!
+
+    """A cursor after which elements are returned."""
+    after: String
+  ): MetafieldConnection!
+
+  """A list of tickets associated with the event."""
+  tickets(
+    """Limits number of fetched items. Maximum allowed value: 50."""
+    first: Int!
+
+    """A cursor after which elements are returned."""
+    after: String
+  ): EventTicketConnection!
+}
+
+"""
+Represents information about the metafields associated to the specified resource.
+"""
+interface HasMetafields {
+  """Returns a metafield by namespace and key that belongs to the resource."""
+  metafield(
+    """The key for the metafield."""
+    key: String!
+
+    """The namespace for the metafield."""
+    namespace: String!
+  ): Metafield
+
+  """List of metafields that belong to the resource."""
+  metafields(
+    """A cursor after which elements are returned."""
+    after: String
+
+    """Limits number of fetched items. Maximum allowed value: 50."""
+    first: Int!
+
+    """The metafield namespace to filter by."""
+    namespace: String
+  ): MetafieldConnection!
+}
+
+"""Metafields enable you to attach additional information to a resource."""
+type Metafield {
+  """The date and time (ISO 8601 format) when the metafield was created."""
+  createdAt: DateTime!
+
+  """The description of the metafield."""
+  description: String
+
+  """A globally-unique identifier."""
+  id: ID!
+
+  """The unique identifier for the metafield in its namespace."""
+  key: String!
+
+  """
+  A container for a group of metafields. Grouping metafields within a namespace prevents your metafields from conflicting with other metafields that have the same key name.
+  """
+  namespace: String!
+
+  """The resource that the metafield is attached to."""
+  owner: HasMetafields!
+
+  """The resource that the metafield is attached to."""
+  ownerType: MetafieldOwnerType!
+
+  """The type of data that the metafield stores in the `value` field."""
+  type: MetafieldType!
+
+  """
+  The date and time (ISO 8601 format) when the metafield was last modified.
+  """
+  updatedAt: DateTime!
+
+  """
+  The data to store in the metafield. The data is always stored as a string, regardless of the metafield's type.
+  """
+  value: String!
+}
+
+"""Possible types of a metafield's owner resource."""
+enum MetafieldOwnerType {
+  """The Event metafield owner type."""
+  EVENT
+}
+
+"""Supported types for a metafield."""
+enum MetafieldType {
+  """The hexadecimal code for a color."""
+  COLOR
+
+  """A single-line text field."""
+  SINGLE_LINE_TEXT_FIELD
+}
+
+"""A paginated list of Metafield edges."""
+type MetafieldConnection {
+  """Pagination information about the list of edges."""
+  pageInfo: PageInfo!
+
+  """A list of Metafield edges."""
+  edges: [MetafieldEdge!]!
+}
+
+"""Information about pagination using a Relay style cursor connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """The cursor to continue paginating backwards."""
+  startCursor: String
+
+  """The cursor to continue paginating forwards."""
+  endCursor: String
+
+  """Total number of nodes in the paginated connection."""
+  total: Int!
+
+  """Number of nodes in the current page."""
+  count: Int!
+
+  """Index of the current page."""
+  currentPage: Int!
+
+  """Index of the last available page."""
+  lastPage: Int!
+}
+
+"""An edge that contains a node of type Metafield and a cursor."""
+type MetafieldEdge {
+  """The Metafield node."""
+  node: Metafield!
+
+  """A unique cursor that can be used for pagination."""
+  cursor: String!
+}
+
+"""The possible statuses of an event."""
+enum EventStatus {
+  """The event can accept registrations."""
+  ACTIVE
+
+  """The event has been canceled."""
+  CANCELED
+
+  """The event isn't ready."""
+  DRAFT
+
+  """The event end date has passed."""
+  ENDED
+
+  """The event start date has passed."""
+  STARTED
+}
+
+"""Represents an Event Venue."""
+type EventVenue {
+  """
+  The first line of the address. Typically the street address or PO Box number.
+  """
+  address1: String!
+
+  """The maximum capacity of the venue."""
+  capacity: Int!
+
+  """The name of the city, district, village, or town."""
+  city: String!
+
+  """The date and time (ISO 8601 format) when the venue was created."""
+  createdAt: DateTime!
+
+  """A globally-unique identifier."""
+  id: ID!
+
+  """The latitude coordinate of the venue address."""
+  latitude: Float!
+
+  """The longitude coordinate of the venue address."""
+  longitude: Float!
+
+  """The name of the venue."""
+  name: String!
+
+  """The region of the address, such as the province, state, or district."""
+  province: String!
+
+  """The date and time (ISO 8601 format) when the venue was last modified."""
+  updatedAt: DateTime!
+}
+
+"""A paginated list of EventTicket edges."""
+type EventTicketConnection {
+  """Pagination information about the list of edges."""
+  pageInfo: PageInfo!
+
+  """A list of EventTicket edges."""
+  edges: [EventTicketEdge!]!
+}
+
+"""An edge that contains a node of type EventTicket and a cursor."""
+type EventTicketEdge {
+  """The EventTicket node."""
+  node: EventTicket!
+
+  """A unique cursor that can be used for pagination."""
+  cursor: String!
+}
+
+"""Represents an Event Ticket."""
+type EventTicket {
+  """The attendee that this ticket belongs to."""
+  attendee: EventAttendee!
+
+  """The barcode of the ticket."""
+  barcode: String!
+
+  """The date and time (ISO 8601 format) when the attendee checked in."""
+  checkedInAt: DateTime
+
+  """The date and time (ISO 8601 format) when the ticket was created."""
+  createdAt: DateTime!
+
+  """The event that this ticket belongs to."""
+  event: Event!
+
+  """A globally-unique identifier."""
+  id: ID!
+
+  """The status of the ticket."""
+  status: EventTicketStatus!
+
+  """The date and time (ISO 8601 format) when the ticket was last modified."""
+  updatedAt: DateTime!
+}
+
+"""Represents an Event Attendee."""
+type EventAttendee {
+  """The date and time (ISO 8601 format) when the attendee was created."""
+  createdAt: DateTime!
+
+  """The email of the attendee."""
+  email: String!
+
+  """A globally-unique identifier."""
+  id: ID!
+
+  """The name of the attendee."""
+  name: String!
+
+  """The phone of the attendee."""
+  phone: String
+
+  """
+  The date and time (ISO 8601 format) when the attendee was last modified.
+  """
+  updatedAt: DateTime!
+}
+
+"""The possible statuses of an event ticket."""
+enum EventTicketStatus {
+  """The ticket is cancelled."""
+  CANCELLED
+
+  """The ticket is unused."""
+  UNUSED
+
+  """The ticket is used."""
+  USED
+}
+
+"""Represents a Short Link."""
+type ShortLink implements UniformResourceLocatable {
+  """Total count of clicks associated with the short link."""
+  clicksCount: Int!
+
+  """The date and time (ISO 8601 format) when the short link was created."""
+  createdAt: DateTime!
+
+  """The hash of the short link."""
+  hash: String!
+
+  """A globally-unique identifier."""
+  id: ID!
+
+  """
+  The URL to be redirected from. When the user visits this URL, they will be redirected to the target location.
+  """
+  link: URL!
+
+  """The metrics of the short link."""
+  metrics: ShortLinkMetrics!
+
+  """The position of the short link in the pinned list."""
+  pinnedPosition: Int
+
+  """The HTML path to this resource."""
+  resourcePath: URL!
+
+  """The target location where the user will be redirected to."""
+  target: URL!
+
+  """The title of the short link."""
+  title: String!
+
+  """
+  The date and time (ISO 8601 format) when the short link was last modified.
+  """
+  updatedAt: DateTime!
+
+  """The URL to this resource."""
+  url: URL!
+}
+
+"""Represents a type that can be retrieved by a URL."""
+interface UniformResourceLocatable {
+  """The HTML path to this resource."""
+  resourcePath: URL!
+
+  """The URL to this resource."""
+  url: URL!
+}
+
+"""
+Represents an RFC 3986 and RFC 3987-compliant URI string.
+
+For example, "https://getnerdify.com" is a valid URL. It includes a scheme (https) and a host (getnerdify.com).
+"""
+scalar URL
+
+"""The metrics data of the short link."""
+type ShortLinkMetrics {
+  """The data points by browser."""
+  byBrowser(
+    """The date time range to filter the metrics by."""
+    range: ShortLinkMetricsRange!
+
+    """
+    The timezone that's used to interpret relative date arguments.
+    The timezone defaults to UTC if the timezone isn't provided.
+    """
+    timezone: String! = "UTC"
+  ): [ShortLinkMetricsDataPoint!]!
+
+  """The data points by city."""
+  byCity(
+    """The date time range to filter the metrics by."""
+    range: ShortLinkMetricsRange!
+
+    """
+    The timezone that's used to interpret relative date arguments.
+    The timezone defaults to UTC if the timezone isn't provided.
+    """
+    timezone: String! = "UTC"
+  ): [ShortLinkMetricsDataPoint!]!
+
+  """The data points by country."""
+  byCountry(
+    """The date time range to filter the metrics by."""
+    range: ShortLinkMetricsRange!
+
+    """
+    The timezone that's used to interpret relative date arguments.
+    The timezone defaults to UTC if the timezone isn't provided.
+    """
+    timezone: String! = "UTC"
+  ): [ShortLinkMetricsDataPoint!]!
+
+  """The data points by device type."""
+  byDeviceType(
+    """The date time range to filter the metrics by."""
+    range: ShortLinkMetricsRange!
+
+    """
+    The timezone that's used to interpret relative date arguments.
+    The timezone defaults to UTC if the timezone isn't provided.
+    """
+    timezone: String! = "UTC"
+  ): [ShortLinkMetricsDataPoint!]!
+
+  """The data points by platform family."""
+  byPlatformFamily(
+    """The date time range to filter the metrics by."""
+    range: ShortLinkMetricsRange!
+
+    """
+    The timezone that's used to interpret relative date arguments.
+    The timezone defaults to UTC if the timezone isn't provided.
+    """
+    timezone: String! = "UTC"
+  ): [ShortLinkMetricsDataPoint!]!
+
+  """The data points by referrer."""
+  byReferrer(
+    """The date time range to filter the metrics by."""
+    range: ShortLinkMetricsRange!
+
+    """
+    The timezone that's used to interpret relative date arguments.
+    The timezone defaults to UTC if the timezone isn't provided.
+    """
+    timezone: String! = "UTC"
+  ): [ShortLinkMetricsDataPoint!]!
+
+  """The data points in time series format."""
+  timeSeries(
+    """The interval to group the metrics by."""
+    interval: ShortLinkMetricsTimeSeriesInterval!
+
+    """The date time range to filter the metrics by."""
+    range: ShortLinkMetricsRange!
+
+    """
+    The timezone that's used to interpret relative date arguments.
+    The timezone defaults to UTC if the timezone isn't provided.
+    """
+    timezone: String! = "UTC"
+  ): [ShortLinkMetricsDataPoint!]!
+}
+
+"""Represents the date time range to filter the metrics by."""
+input ShortLinkMetricsRange {
+  """The start date of the range."""
+  from: DateTime!
+
+  """The end date of the range."""
+  to: DateTime!
+}
+
+"""A data point structure for metrics of the short link."""
+type ShortLinkMetricsDataPoint {
+  """The data key. Typically a browser, country, or other qualitative data."""
+  key: String!
+
+  """The data value is numeric and quantitative."""
+  value: Int!
+}
+
+"""Represents a valid time series metric interval."""
+enum ShortLinkMetricsTimeSeriesInterval {
+  """One day interval."""
+  ONE_DAY
+
+  """One hour interval."""
+  ONE_HOUR
+
+  """One month interval."""
+  ONE_MONTH
+}
+
+"""A paginated list of Event edges."""
+type EventConnection {
+  """Pagination information about the list of edges."""
+  pageInfo: PageInfo!
+
+  """A list of Event edges."""
+  edges: [EventEdge!]!
+}
+
+"""An edge that contains a node of type Event and a cursor."""
+type EventEdge {
+  """The Event node."""
+  node: Event!
+
+  """A unique cursor that can be used for pagination."""
+  cursor: String!
+}
+
+"""Possible short link pinned statuses."""
+enum ShortLinkPinnedStatus {
+  """All short links."""
+  ANY
+
+  """Only short links that are pinned."""
+  PINNED
+
+  """Only short links that are not pinned."""
+  UNPINNED
+}
+
+"""The set of valid sort keys for the Short Link query."""
+enum ShortLinkSortKeys {
+  """Sort by the `created_at` value."""
+  CREATED_AT
+
+  """Sort by the `pinned_position` value."""
+  PINNED_POSITION
+
+  """Sort by the `title` value."""
+  TITLE
+
+  """Sort by the `updated_at` value."""
+  UPDATED_AT
+}
+
+"""A paginated list of ShortLink edges."""
+type ShortLinkConnection {
+  """Pagination information about the list of edges."""
+  pageInfo: PageInfo!
+
+  """A list of ShortLink edges."""
+  edges: [ShortLinkEdge!]!
+}
+
+"""An edge that contains a node of type ShortLink and a cursor."""
+type ShortLinkEdge {
+  """The ShortLink node."""
+  node: ShortLink!
+
+  """A unique cursor that can be used for pagination."""
+  cursor: String!
+}
+
+type Mutation {
+  """Complete email sign-in."""
+  signInWithEmailComplete(input: SignInWithEmailCompleteInput!): SignInWithEmailCompletePayload
+
+  """Initiate email sign-in"""
+  signInWithEmailInitiate(input: SignInWithEmailInitiateInput!): SignInWithEmailInitiatePayload
+
+  """Google sign in."""
+  signInWithGoogle(input: SignInWithGoogleInput!): SignInWithGooglePayload
+
+  """Register an attendee for an event."""
+  eventAttendeeRegister(input: EventAttendeeRegisterInput!): EventAttendeeRegisterPayload
+
+  """Updates status for an event ticket."""
+  eventTicketMarkAsUsed(input: EventTicketMarkAsUsedInput!): EventTicketMarkAsUsedPayload
+
+  """Creates a short link."""
+  shortLinkCreate(input: ShortLinkInput!): ShortLinkCreatePayload
+
+  """
+  Pin a short link. By default, only pinned short links are displayed on the home page.
+  """
+  shortLinkPin(input: ShortLinkPinInput!): ShortLinkPinPayload
+
+  """
+  Unpin a short link. By default, only pinned short links are displayed on the home page.
+  """
+  shortLinkUnpin(input: ShortLinkUnpinInput!): ShortLinkUnpinPayload
+
+  """Updates a short link."""
+  shortLinkUpdate(input: ShortLinkInput!): ShortLinkUpdatePayload
+
+  """Reorder pinned short links."""
+  shortLinksPinnedReorder(input: ShortLinksPinnedReorderInput!): ShortLinksPinnedReorderPayload
+}
+
+"""
+Specifies the input fields required to complete the authentication with Email.
+"""
+input SignInWithEmailCompleteInput {
+  """The email of the user."""
+  email: String!
+
+  """The verification token."""
+  verificationToken: String!
+}
+
+"""Return type for `signInWithEmailComplete` mutation."""
+type SignInWithEmailCompletePayload {
+  """Access token associated with the signed-in user."""
+  accessToken: String
+
+  """The signed-in user."""
+  user: User
+
+  """The list of errors that occurred from executing the mutation."""
+  userErrors: [UserError!]!
+}
+
+"""Represents an error in the input of a mutation."""
+type UserError implements DisplayableError {
+  """The path to the input field that caused the error."""
+  field: [String!]
+
+  """The error message."""
+  message: String!
+}
+
+"""Represents an error in the input of a mutation."""
+interface DisplayableError {
+  """Path to the input field which caused the error."""
+  field: [String!]
+
+  """The error message."""
+  message: String!
+}
+
+"""
+Specifies the input fields required to initiate the authentication with Email.
+"""
+input SignInWithEmailInitiateInput {
+  """The email of the user."""
+  email: String!
+
+  """
+  The desired name for the token. It will be displayed on the user account details.
+  """
+  tokenName: String!
+}
+
+"""Return type for `signInWithEmailInitiate` mutation."""
+type SignInWithEmailInitiatePayload {
+  """The completion token."""
+  completionToken: String
+
+  """The list of errors that occurred from executing the mutation."""
+  userErrors: [UserError!]!
+}
+
+"""Specifies the input fields required to authenticate with Google."""
+input SignInWithGoogleInput {
+  """Access token."""
+  accessToken: String!
+
+  """Id token."""
+  idToken: String!
+}
+
+"""Return type for `signInWithGoogle` mutation."""
+type SignInWithGooglePayload {
+  """Access token associated with the signed-in user."""
+  accessToken: String
+
+  """The signed-in user."""
+  user: User
+
+  """The list of errors that occurred from executing the mutation."""
+  userErrors: [UserError!]!
+}
+
+"""
+Specifies the input fields required to create or update an event attendee.
+"""
+input EventAttendeeRegisterInput {
+  """The email of the attendee."""
+  email: String!
+
+  """
+  The event to create the ticket for. Used as input only to the `eventAttendeeRegister` mutation.
+  """
+  eventId: ID!
+
+  """The name of the attendee."""
+  name: String!
+
+  """The phone of the attendee."""
+  phone: String
+}
+
+"""Return type for `eventAttendeeRegister` mutation."""
+type EventAttendeeRegisterPayload {
+  """The event associated with the attendee."""
+  event: Event
+
+  """The created attendee."""
+  eventAttendee: EventAttendee
+
+  """The created ticket."""
+  eventTicket: EventTicket
+
+  """The list of errors that occurred from executing the mutation."""
+  userErrors: [UserError!]!
+}
+
+"""Specifies the ticket to mark as used."""
+input EventTicketMarkAsUsedInput {
+  """The ID of the ticket to mark as used."""
+  id: ID!
+}
+
+"""Return type for `eventTicketMarkAsUsed` mutation."""
+type EventTicketMarkAsUsedPayload {
+  """The event associated with the ticket."""
+  event: Event
+
+  """The ticket marked as used."""
+  eventTicket: EventTicket
+
+  """The list of errors that occurred from executing the mutation."""
+  userErrors: [UserError!]!
+}
+
+"""Specifies the input fields required to create or update a short link."""
+input ShortLinkInput {
+  """The hash of the short link."""
+  hash: String
+
+  """
+  Specifies the short link to update or creates a new short link if absent.
+  """
+  id: ID
+
+  """The target location where the user will be redirected to."""
+  target: URL
+
+  """The title of the short link."""
+  title: String
+}
+
+"""Return type for `shortLinkCreate` mutation."""
+type ShortLinkCreatePayload {
+  """The created short link."""
+  shortLink: ShortLink
+
+  """The list of errors that occurred from executing the mutation."""
+  userErrors: [UserError!]!
+}
+
+"""Specifies a short link to pin to the home page."""
+input ShortLinkPinInput {
+  """The ID of the short link to pin."""
+  id: ID!
+}
+
+"""Return type for `shortLinkPin` mutation."""
+type ShortLinkPinPayload {
+  """The short link that was pinned."""
+  shortLink: ShortLink
+
+  """The list of errors that occurred from executing the mutation."""
+  userErrors: [UserError!]!
+}
+
+"""Specifies a short link to unpin from the home page."""
+input ShortLinkUnpinInput {
+  """The ID of the short link to unpin."""
+  id: ID!
+}
+
+"""Return type for `shortLinkUnpin` mutation."""
+type ShortLinkUnpinPayload {
+  """The short link that was unpinned."""
+  shortLink: ShortLink
+
+  """The list of errors that occurred from executing the mutation."""
+  userErrors: [UserError!]!
+}
+
+"""Return type for `shortLinkUpdate` mutation."""
+type ShortLinkUpdatePayload {
+  """The updated short link."""
+  shortLink: ShortLink
+
+  """The list of errors that occurred from executing the mutation."""
+  userErrors: [UserError!]!
+}
+
+"""Specifies a short link to unpin from the home page."""
+input ShortLinksPinnedReorderInput {
+  """The IDs of the short links to reorder."""
+  ids: [ID!]!
+}
+
+"""Return type for `shortLinksPinnedReorder` mutation."""
+type ShortLinksPinnedReorderPayload {
+  """The list of errors that occurred from executing the mutation."""
+  userErrors: [UserError!]!
+}
+
+"""
+Represents an ISO 8601-encoded date string.
+
+For example, July 23, 2022 is represented as "2022-07-23".
+"""
+scalar Date
+
+"""
+Can be used as an argument to upload files using https://github.com/jaydenseric/graphql-multipart-request-spec.
+"""
+scalar Upload
+
+"""
+The input fields to use to create or update a metafield through a mutation on the owning resource. An alternative way to create or update a metafield is by using the metafieldsSet mutation.
+"""
+input MetafieldInput {
+  """The description of the metafield."""
+  description: String
+
+  """
+  Specifies the metafield to update or creates a new metafield if absent.
+  """
+  id: ID
+
+  """The key name of the metafield."""
+  key: String
+
+  """The namespace for a metafield."""
+  namespace: String
+
+  """The metafield's type."""
+  type: MetafieldType
+
+  """The value of a metafield."""
+  value: String
+}
+
+"""Directions for ordering a list of records."""
+enum SortOrder {
+  """Sort records in ascending order."""
+  ASC
+
+  """Sort records in descending order."""
+  DESC
+}
+
+"""
+Aggregate functions when ordering by a relation without specifying a column.
+"""
+enum OrderByRelationAggregateFunction {
+  """Amount of items."""
+  COUNT
+}
+
+"""
+Aggregate functions when ordering by a relation that may specify a column.
+"""
+enum OrderByRelationWithColumnAggregateFunction {
+  """Average."""
+  AVG
+
+  """Minimum."""
+  MIN
+
+  """Maximum."""
+  MAX
+
+  """Sum."""
+  SUM
+
+  """Amount of items."""
+  COUNT
+}
+
+"""Allows ordering a list of records."""
+input OrderByClause {
+  """The column that is used for ordering."""
+  column: String!
+
+  """The direction that is used for ordering."""
+  order: SortOrder!
+}
+
+"""Information about pagination using a fully featured paginator."""
+type PaginatorInfo {
+  """Number of items in the current page."""
+  count: Int!
+
+  """Index of the current page."""
+  currentPage: Int!
+
+  """Index of the first item in the current page."""
+  firstItem: Int
+
+  """Are there more pages after this one?"""
+  hasMorePages: Boolean!
+
+  """Index of the last item in the current page."""
+  lastItem: Int
+
+  """Index of the last available page."""
+  lastPage: Int!
+
+  """Number of items per page."""
+  perPage: Int!
+
+  """Number of total available items."""
+  total: Int!
+}
+
+"""Information about pagination using a simple paginator."""
+type SimplePaginatorInfo {
+  """Number of items in the current page."""
+  count: Int!
+
+  """Index of the current page."""
+  currentPage: Int!
+
+  """Index of the first item in the current page."""
+  firstItem: Int
+
+  """Index of the last item in the current page."""
+  lastItem: Int
+
+  """Number of items per page."""
+  perPage: Int!
+
+  """Are there more pages after this one?"""
+  hasMorePages: Boolean!
+}
+
+"""
+Specify if you want to include or exclude trashed results from a query.
+"""
+enum Trashed {
+  """Only return trashed results."""
+  ONLY
+
+  """Return both trashed and non-trashed results."""
+  WITH
+
+  """Only return non-trashed results."""
+  WITHOUT
+}
